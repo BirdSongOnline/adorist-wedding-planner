@@ -4,916 +4,776 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Adorist Wedding Planner</title>
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Custom styles for icons since we can't use Lucide in this format */
-        .icon {
-            width: 1rem;
-            height: 1rem;
-            display: inline-block;
-            vertical-align: middle;
-        }
-        .icon-lg {
-            width: 2rem;
-            height: 2rem;
-        }
+        .timeline-gradient-1 { background: linear-gradient(to right, #ec4899, #fb7185); }
+        .timeline-gradient-2 { background: linear-gradient(to right, #8b5cf6, #6366f1); }
+        .timeline-gradient-3 { background: linear-gradient(to right, #3b82f6, #06b6d4); }
+        .timeline-gradient-4 { background: linear-gradient(to right, #10b981, #14b8a6); }
     </style>
 </head>
-<body>
-    <div id="root"></div>
-    
-    <script type="text/babel">
-        const { useState } = React;
+<body class="bg-gradient-to-br from-rose-50 to-pink-50 min-h-screen">
 
-        // Simple icon components (replacing Lucide icons)
-        const CheckCircle = ({ className }) => (
-            <svg className={className} fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-            </svg>
-        );
+    <!-- Header -->
+    <div class="bg-white shadow-sm border-b">
+        <div class="max-w-6xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <svg class="text-rose-500 w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path d="M6 3h12l4 6-10 12L2 9l4-6z"></path>
+                        <path d="M6 3l6 6l6-6"></path>
+                        <path d="M6 9l6 12l6-12"></path>
+                    </svg>
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-800">Adorist Wedding Planner</h1>
+                        <p class="text-sm text-gray-500">Your personal wedding planning assistant</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button onclick="toggleView()" class="flex items-center space-x-2 px-4 py-2 bg-rose-500 text-white rounded-lg hover:bg-rose-600 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                        </svg>
+                        <span id="viewToggleText">Admin View</span>
+                    </button>
+                    <div class="text-right" id="progressDisplay">
+                        <div class="text-sm text-gray-500">Progress</div>
+                        <div class="text-2xl font-bold text-rose-500" id="progressPercent">0%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        const Circle = ({ className }) => (
-            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10"></circle>
-            </svg>
-        );
+    <!-- Content -->
+    <div class="max-w-6xl mx-auto px-4 py-6">
+        
+        <!-- Admin View -->
+        <div id="adminView" class="hidden">
+            <div class="bg-white rounded-lg shadow-sm p-8 text-center">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Adorist Admin Dashboard</h2>
+                <p class="text-xl text-gray-600 mb-8">Monitor all your clients' wedding planning progress</p>
+                <div class="grid grid-cols-3 gap-6">
+                    <div class="bg-green-50 p-6 rounded-lg">
+                        <div class="text-3xl font-bold text-green-700">8</div>
+                        <div class="text-green-600">Active Clients</div>
+                    </div>
+                    <div class="bg-blue-50 p-6 rounded-lg">
+                        <div class="text-3xl font-bold text-blue-700">73%</div>
+                        <div class="text-blue-600">Avg Progress</div>
+                    </div>
+                    <div class="bg-red-50 p-6 rounded-lg">
+                        <div class="text-3xl font-bold text-red-700">2</div>
+                        <div class="text-red-600">Need Attention</div>
+                    </div>
+                </div>
+                <div class="mt-8 p-4 bg-gray-50 rounded-lg">
+                    <p class="text-gray-600">Full admin features with client oversight, progress monitoring, and vendor management coming soon!</p>
+                </div>
+            </div>
+        </div>
 
-        const Calendar = ({ className }) => (
-            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                <line x1="16" y1="2" x2="16" y2="6"></line>
-                <line x1="8" y1="2" x2="8" y2="6"></line>
-                <line x1="3" y1="10" x2="21" y2="10"></line>
-            </svg>
-        );
+        <!-- Client View -->
+        <div id="clientView">
+            
+            <!-- Wedding Date Input -->
+            <div class="mb-6">
+                <div class="bg-white rounded-lg shadow-sm p-4">
+                    <div class="flex items-center space-x-4">
+                        <svg class="text-rose-500 w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                        <div class="flex-1">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Wedding Date</label>
+                            <input type="date" id="weddingDate" class="p-2 border rounded-md w-full max-w-xs">
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        const Users = ({ className }) => (
-            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                <circle cx="9" cy="7" r="4"></circle>
-                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-            </svg>
-        );
+            <!-- Navigation Tabs -->
+            <div class="mb-6">
+                <div class="flex space-x-1 bg-white rounded-lg p-1 shadow-sm">
+                    <button onclick="showTab('checklist')" id="checklistTab" class="flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors bg-rose-500 text-white">
+                        <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12,6 12,12 16,14"></polyline>
+                        </svg>
+                        Checklist
+                    </button>
+                    <button onclick="showTab('vendors')" id="vendorsTab" class="flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors text-gray-600 hover:text-gray-800">
+                        <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"></polygon>
+                        </svg>
+                        Vendors
+                    </button>
+                    <button onclick="showTab('guests')" id="guestsTab" class="flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors text-gray-600 hover:text-gray-800">
+                        <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                        Guests
+                    </button>
+                </div>
+            </div>
 
-        const Diamond = ({ className }) => (
-            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path d="M6 3h12l4 6-10 12L2 9l4-6z"></path>
-                <path d="M6 3l6 6l6-6"></path>
-                <path d="M6 9l6 12l6-12"></path>
-            </svg>
-        );
+            <!-- Checklist Tab -->
+            <div id="checklistContent" class="space-y-6">
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                    <div class="timeline-gradient-1 p-4">
+                        <h2 class="text-xl font-bold text-white">Newly Engaged</h2>
+                        <p class="text-white/90 text-sm">Just Engaged</p>
+                    </div>
+                    <div class="p-4 space-y-3">
+                        <div class="flex items-start space-x-3">
+                            <button onclick="toggleTask(this)" class="mt-1 flex-shrink-0">
+                                <svg class="w-5 h-5 text-gray-400 hover:text-gray-600 task-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                </svg>
+                            </button>
+                            <p class="text-sm text-gray-800 task-text">Write down your "must haves"</p>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <button onclick="toggleTask(this)" class="mt-1 flex-shrink-0">
+                                <svg class="w-5 h-5 text-gray-400 hover:text-gray-600 task-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                </svg>
+                            </button>
+                            <p class="text-sm text-gray-800 task-text">Come up with wedding theme: colors, style, energy</p>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <button onclick="toggleTask(this)" class="mt-1 flex-shrink-0">
+                                <svg class="w-5 h-5 text-gray-400 hover:text-gray-600 task-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                </svg>
+                            </button>
+                            <p class="text-sm text-gray-800 task-text">Plan engagement party</p>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <button onclick="toggleTask(this)" class="mt-1 flex-shrink-0">
+                                <svg class="w-5 h-5 text-gray-400 hover:text-gray-600 task-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                </svg>
+                            </button>
+                            <p class="text-sm text-gray-800 task-text">Decide if you want to elope</p>
+                        </div>
+                    </div>
+                </div>
 
-        const Clock = ({ className }) => (
-            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10"></circle>
-                <polyline points="12,6 12,12 16,14"></polyline>
-            </svg>
-        );
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                    <div class="timeline-gradient-2 p-4">
+                        <h2 class="text-xl font-bold text-white">18 Months Before</h2>
+                        <p class="text-white/90 text-sm">18 Months Out</p>
+                    </div>
+                    <div class="p-4 space-y-3">
+                        <div class="flex items-start space-x-3">
+                            <button onclick="toggleTask(this)" class="mt-1 flex-shrink-0">
+                                <svg class="w-5 h-5 text-gray-400 hover:text-gray-600 task-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                </svg>
+                            </button>
+                            <p class="text-sm text-gray-800 task-text">Figure out your wedding budget</p>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <button onclick="toggleTask(this)" class="mt-1 flex-shrink-0">
+                                <svg class="w-5 h-5 text-gray-400 hover:text-gray-600 task-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                </svg>
+                            </button>
+                            <p class="text-sm text-gray-800 task-text">Find a wedding coordinator (hopefully Adorist! 😉)</p>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <button onclick="toggleTask(this)" class="mt-1 flex-shrink-0">
+                                <svg class="w-5 h-5 text-gray-400 hover:text-gray-600 task-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                </svg>
+                            </button>
+                            <p class="text-sm text-gray-800 task-text">Choose your wedding party</p>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <button onclick="toggleTask(this)" class="mt-1 flex-shrink-0">
+                                <svg class="w-5 h-5 text-gray-400 hover:text-gray-600 task-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                </svg>
+                            </button>
+                            <p class="text-sm text-gray-800 task-text">Have first guest list discussion</p>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <button onclick="toggleTask(this)" class="mt-1 flex-shrink-0">
+                                <svg class="w-5 h-5 text-gray-400 hover:text-gray-600 task-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                </svg>
+                            </button>
+                            <p class="text-sm text-gray-800 task-text">Narrow down venue options</p>
+                        </div>
+                    </div>
+                </div>
 
-        const Star = ({ className }) => (
-            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"></polygon>
-            </svg>
-        );
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                    <div class="timeline-gradient-3 p-4">
+                        <h2 class="text-xl font-bold text-white">16 Months Before</h2>
+                        <p class="text-white/90 text-sm">16 Months Out</p>
+                    </div>
+                    <div class="p-4 space-y-3">
+                        <div class="flex items-start space-x-3">
+                            <button onclick="toggleTask(this)" class="mt-1 flex-shrink-0">
+                                <svg class="w-5 h-5 text-gray-400 hover:text-gray-600 task-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                </svg>
+                            </button>
+                            <p class="text-sm text-gray-800 task-text">Tour preferred venues</p>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <button onclick="toggleTask(this)" class="mt-1 flex-shrink-0">
+                                <svg class="w-5 h-5 text-gray-400 hover:text-gray-600 task-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                </svg>
+                            </button>
+                            <p class="text-sm text-gray-800 task-text">Book the venue</p>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <button onclick="toggleTask(this)" class="mt-1 flex-shrink-0">
+                                <svg class="w-5 h-5 text-gray-400 hover:text-gray-600 task-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                </svg>
+                            </button>
+                            <p class="text-sm text-gray-800 task-text">Search for photographer/videographer</p>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <button onclick="toggleTask(this)" class="mt-1 flex-shrink-0">
+                                <svg class="w-5 h-5 text-gray-400 hover:text-gray-600 task-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                </svg>
+                            </button>
+                            <p class="text-sm text-gray-800 task-text">Book photography/videography</p>
+                        </div>
+                    </div>
+                </div>
 
-        const Plus = ({ className }) => (
-            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <line x1="12" y1="5" x2="12" y2="19"></line>
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-            </svg>
-        );
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                    <div class="timeline-gradient-4 p-4">
+                        <h2 class="text-xl font-bold text-white">12 Months Before</h2>
+                        <p class="text-white/90 text-sm">12 Months Out</p>
+                    </div>
+                    <div class="p-4 space-y-3">
+                        <div class="flex items-start space-x-3">
+                            <button onclick="toggleTask(this)" class="mt-1 flex-shrink-0">
+                                <svg class="w-5 h-5 text-gray-400 hover:text-gray-600 task-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                </svg>
+                            </button>
+                            <p class="text-sm text-gray-800 task-text">Start shopping for wedding attire</p>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <button onclick="toggleTask(this)" class="mt-1 flex-shrink-0">
+                                <svg class="w-5 h-5 text-gray-400 hover:text-gray-600 task-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                </svg>
+                            </button>
+                            <p class="text-sm text-gray-800 task-text">Schedule florist appointments</p>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <button onclick="toggleTask(this)" class="mt-1 flex-shrink-0">
+                                <svg class="w-5 h-5 text-gray-400 hover:text-gray-600 task-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                </svg>
+                            </button>
+                            <p class="text-sm text-gray-800 task-text">Contact caterers</p>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <button onclick="toggleTask(this)" class="mt-1 flex-shrink-0">
+                                <svg class="w-5 h-5 text-gray-400 hover:text-gray-600 task-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                </svg>
+                            </button>
+                            <p class="text-sm text-gray-800 task-text">Shoot engagement photos</p>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <button onclick="toggleTask(this)" class="mt-1 flex-shrink-0">
+                                <svg class="w-5 h-5 text-gray-400 hover:text-gray-600 task-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                </svg>
+                            </button>
+                            <p class="text-sm text-gray-800 task-text">Finalize guest list</p>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <button onclick="toggleTask(this)" class="mt-1 flex-shrink-0">
+                                <svg class="w-5 h-5 text-gray-400 hover:text-gray-600 task-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                </svg>
+                            </button>
+                            <p class="text-sm text-gray-800 task-text">Send Save the Dates</p>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <button onclick="toggleTask(this)" class="mt-1 flex-shrink-0">
+                                <svg class="w-5 h-5 text-gray-400 hover:text-gray-600 task-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                </svg>
+                            </button>
+                            <p class="text-sm text-gray-800 task-text">Create wedding website</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        const Edit2 = ({ className }) => (
-            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-            </svg>
-        );
+            <!-- Vendors Tab -->
+            <div id="vendorsContent" class="hidden space-y-6">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-xl font-bold text-gray-800">Your Vendors</h2>
+                    <button onclick="showAddVendorForm()" class="bg-rose-500 text-white px-4 py-2 rounded-lg hover:bg-rose-600 flex items-center space-x-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        <span>Add Vendor</span>
+                    </button>
+                </div>
 
-        const X = ({ className }) => (
-            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-        );
+                <!-- Add Vendor Form -->
+                <div id="addVendorForm" class="hidden bg-white p-6 rounded-lg shadow-lg border">
+                    <h3 class="text-lg font-semibold mb-4">Add New Vendor</h3>
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <input type="text" id="vendorName" placeholder="Vendor Name" class="p-2 border rounded">
+                            <select id="vendorType" class="p-2 border rounded">
+                                <option value="">Select Type</option>
+                                <option value="venue">Venue</option>
+                                <option value="photographer">Photographer</option>
+                                <option value="florist">Florist</option>
+                                <option value="caterer">Caterer</option>
+                                <option value="dj">DJ/Band</option>
+                                <option value="coordinator">Coordinator</option>
+                                <option value="officiant">Officiant</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <input type="email" id="vendorEmail" placeholder="Email" class="p-2 border rounded">
+                            <input type="tel" id="vendorPhone" placeholder="Phone" class="p-2 border rounded">
+                        </div>
+                        <input type="text" id="vendorCost" placeholder="Cost (e.g., $2,500)" class="p-2 border rounded w-full">
+                        <textarea id="vendorNotes" placeholder="Notes" class="p-2 border rounded w-full h-20"></textarea>
+                        <div class="flex gap-2">
+                            <button onclick="saveVendor()" class="bg-rose-500 text-white px-4 py-2 rounded hover:bg-rose-600">Save</button>
+                            <button onclick="cancelVendorForm()" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400">Cancel</button>
+                        </div>
+                    </div>
+                </div>
 
-        const Settings = ({ className }) => (
-            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="3"></circle>
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-            </svg>
-        );
+                <!-- Vendors List -->
+                <div id="vendorsList">
+                    <div class="text-center py-12 bg-white rounded-lg shadow-sm">
+                        <svg class="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                        <p class="text-gray-500">No vendors added yet</p>
+                        <p class="text-sm text-gray-400">Click "Add Vendor" to get started</p>
+                    </div>
+                </div>
+            </div>
 
-        const AlertTriangle = ({ className }) => (
-            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-                <line x1="12" y1="9" x2="12" y2="13"></line>
-                <line x1="12" y1="17" x2="12.01" y2="17"></line>
-            </svg>
-        );
+            <!-- Guests Tab -->
+            <div id="guestsContent" class="hidden space-y-6">
+                <!-- Guest Stats -->
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                    <div class="bg-white p-4 rounded-lg shadow-sm text-center">
+                        <div class="text-2xl font-bold text-gray-800" id="totalGuests">0</div>
+                        <div class="text-sm text-gray-600">Total Invited</div>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-sm text-center">
+                        <div class="text-2xl font-bold text-green-600" id="confirmedGuests">0</div>
+                        <div class="text-sm text-gray-600">Confirmed</div>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-sm text-center">
+                        <div class="text-2xl font-bold text-red-600" id="declinedGuests">0</div>
+                        <div class="text-sm text-gray-600">Declined</div>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-sm text-center">
+                        <div class="text-2xl font-bold text-blue-600" id="seatedGuests">0</div>
+                        <div class="text-sm text-gray-600">Seated</div>
+                    </div>
+                </div>
 
-        const Eye = ({ className }) => (
-            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                <circle cx="12" cy="12" r="3"></circle>
-            </svg>
-        );
+                <div class="flex justify-between items-center">
+                    <h2 class="text-xl font-bold text-gray-800">Guest List</h2>
+                    <button onclick="showAddGuestForm()" class="bg-rose-500 text-white px-4 py-2 rounded-lg hover:bg-rose-600 flex items-center space-x-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="8.5" cy="7" r="4"></circle>
+                            <line x1="20" y1="8" x2="20" y2="14"></line>
+                            <line x1="23" y1="11" x2="17" y2="11"></line>
+                        </svg>
+                        <span>Add Guest</span>
+                    </button>
+                </div>
 
-        const UserPlus = ({ className }) => (
-            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                <circle cx="8.5" cy="7" r="4"></circle>
-                <line x1="20" y1="8" x2="20" y2="14"></line>
-                <line x1="23" y1="11" x2="17" y2="11"></line>
-            </svg>
-        );
+                <!-- Add Guest Form -->
+                <div id="addGuestForm" class="hidden bg-white p-6 rounded-lg shadow-lg border">
+                    <h3 class="text-lg font-semibold mb-4">Add New Guest</h3>
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <input type="text" id="guestFirstName" placeholder="First Name" class="p-2 border rounded">
+                            <input type="text" id="guestLastName" placeholder="Last Name" class="p-2 border rounded">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <input type="email" id="guestEmail" placeholder="Email" class="p-2 border rounded">
+                            <input type="tel" id="guestPhone" placeholder="Phone" class="p-2 border rounded">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <input type="text" id="guestGroup" placeholder="Group (Family, Friends, Work, etc.)" class="p-2 border rounded">
+                            <select id="guestRSVP" class="p-2 border rounded">
+                                <option value="pending">RSVP Pending</option>
+                                <option value="yes">Yes - Attending</option>
+                                <option value="no">No - Declined</option>
+                                <option value="maybe">Maybe</option>
+                            </select>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <input type="text" id="guestPlusOne" placeholder="Plus One Name (if applicable)" class="p-2 border rounded">
+                            <input type="number" id="guestTable" placeholder="Table Number" class="p-2 border rounded">
+                        </div>
+                        <textarea id="guestDietary" placeholder="Dietary Restrictions / Notes" class="p-2 border rounded w-full h-20"></textarea>
+                        <div class="flex gap-2">
+                            <button onclick="saveGuest()" class="bg-rose-500 text-white px-4 py-2 rounded hover:bg-rose-600">Save</button>
+                            <button onclick="cancelGuestForm()" class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400">Cancel</button>
+                        </div>
+                    </div>
+                </div>
 
-        const List = ({ className }) => (
-            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <line x1="8" y1="6" x2="21" y2="6"></line>
-                <line x1="8" y1="12" x2="21" y2="12"></line>
-                <line x1="8" y1="18" x2="21" y2="18"></line>
-                <line x1="3" y1="6" x2="3.01" y2="6"></line>
-                <line x1="3" y1="12" x2="3.01" y2="12"></line>
-                <line x1="3" y1="18" x2="3.01" y2="18"></line>
-            </svg>
-        );
+                <!-- Guests List -->
+                <div id="guestsList">
+                    <div class="text-center py-12 bg-white rounded-lg shadow-sm">
+                        <svg class="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                        <p class="text-gray-500">No guests added yet</p>
+                        <p class="text-sm text-gray-400">Click "Add Guest" to get started</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        const Table = ({ className }) => (
-            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"></path>
-            </svg>
-        );
+    <script>
+        let isAdminView = false;
+        let completedTasks = new Set();
+        let vendors = [];
+        let guests = [];
 
-        const Lightbulb = ({ className }) => (
-            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path d="M9 21h6"></path>
-                <path d="M12 17h.01"></path>
-                <path d="M12 3a6 6 0 0 0-6 6c0 1.7.7 3.2 1.8 4.3l.2.3V17h8v-3.4l.2-.3A6 6 0 0 0 12 3z"></path>
-            </svg>
-        );
+        function toggleView() {
+            isAdminView = !isAdminView;
+            const adminView = document.getElementById('adminView');
+            const clientView = document.getElementById('clientView');
+            const progressDisplay = document.getElementById('progressDisplay');
+            const viewToggleText = document.getElementById('viewToggleText');
 
-        const Mail = ({ className }) => (
-            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                <polyline points="22,6 12,13 2,6"></polyline>
-            </svg>
-        );
+            if (isAdminView) {
+                adminView.classList.remove('hidden');
+                clientView.classList.add('hidden');
+                progressDisplay.classList.add('hidden');
+                viewToggleText.textContent = 'Client View';
+            } else {
+                adminView.classList.add('hidden');
+                clientView.classList.remove('hidden');
+                progressDisplay.classList.remove('hidden');
+                viewToggleText.textContent = 'Admin View';
+            }
+        }
 
-        const Phone = ({ className }) => (
-            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-            </svg>
-        );
+        function showTab(tabName) {
+            // Hide all content
+            document.getElementById('checklistContent').classList.add('hidden');
+            document.getElementById('vendorsContent').classList.add('hidden');
+            document.getElementById('guestsContent').classList.add('hidden');
 
-        const DollarSign = ({ className }) => (
-            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <line x1="12" y1="1" x2="12" y2="23"></line>
-                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-            </svg>
-        );
+            // Reset all tab styles
+            document.getElementById('checklistTab').className = 'flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors text-gray-600 hover:text-gray-800';
+            document.getElementById('vendorsTab').className = 'flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors text-gray-600 hover:text-gray-800';
+            document.getElementById('guestsTab').className = 'flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors text-gray-600 hover:text-gray-800';
 
-        const AdoristWeddingPlanner = () => {
-            const [viewMode, setViewMode] = useState('client');
-            const [activeTab, setActiveTab] = useState('timeline');
-            const [selectedClient, setSelectedClient] = useState(null);
-            const [weddingDate, setWeddingDate] = useState('');
-            const [completedTasks, setCompletedTasks] = useState(new Set());
-            const [vendors, setVendors] = useState([]);
-            const [editingVendor, setEditingVendor] = useState(null);
-            const [showAddVendor, setShowAddVendor] = useState(false);
-            const [adminNotes, setAdminNotes] = useState({});
-            const [guests, setGuests] = useState([]);
-            const [editingGuest, setEditingGuest] = useState(null);
-            const [showAddGuest, setShowAddGuest] = useState(false);
-            const [guestViewMode, setGuestViewMode] = useState('list');
+            // Show selected content and highlight tab
+            if (tabName === 'checklist') {
+                document.getElementById('checklistContent').classList.remove('hidden');
+                document.getElementById('checklistTab').className = 'flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors bg-rose-500 text-white';
+            } else if (tabName === 'vendors') {
+                document.getElementById('vendorsContent').classList.remove('hidden');
+                document.getElementById('vendorsTab').className = 'flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors bg-rose-500 text-white';
+            } else if (tabName === 'guests') {
+                document.getElementById('guestsContent').classList.remove('hidden');
+                document.getElementById('guestsTab').className = 'flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors bg-rose-500 text-white';
+            }
+        }
 
-            const timelineData = [
-                {
-                    title: "Newly Engaged",
-                    timeframe: "Just Engaged",
-                    color: "from-pink-500 to-rose-400",
-                    tasks: [
-                        { id: 'must-haves', text: 'Write down your "must haves"', notes: '' },
-                        { id: 'theme', text: 'Come up with wedding theme: colors, style, energy', notes: '' },
-                        { id: 'engagement-party', text: 'Plan engagement party', notes: '' },
-                        { id: 'elope-decision', text: 'Decide if you want to elope', notes: '' }
-                    ]
-                },
-                {
-                    title: "18 Months Before",
-                    timeframe: "18 Months Out",
-                    color: "from-purple-500 to-indigo-400",
-                    tasks: [
-                        { id: 'budget', text: 'Figure out your wedding budget', notes: '' },
-                        { id: 'coordinator', text: 'Find a wedding coordinator (hopefully Adorist! 😉)', notes: '' },
-                        { id: 'wedding-party', text: 'Choose your wedding party', notes: '' },
-                        { id: 'guest-list-chat', text: 'Have first guest list discussion', notes: '' },
-                        { id: 'venue-search', text: 'Narrow down venue options', notes: '' }
-                    ]
-                },
-                {
-                    title: "16 Months Before",
-                    timeframe: "16 Months Out",
-                    color: "from-blue-500 to-cyan-400",
-                    tasks: [
-                        { id: 'tour-venues', text: 'Tour preferred venues', notes: '' },
-                        { id: 'book-venue', text: 'Book the venue', notes: '' },
-                        { id: 'photographer-search', text: 'Search for photographer/videographer', notes: '' },
-                        { id: 'book-photography', text: 'Book photography/videography', notes: '' }
-                    ]
-                },
-                {
-                    title: "12 Months Before",
-                    timeframe: "12 Months Out",
-                    color: "from-emerald-500 to-teal-400",
-                    tasks: [
-                        { id: 'wedding-attire', text: 'Start shopping for wedding attire', notes: '' },
-                        { id: 'florist-meetings', text: 'Schedule florist appointments', notes: '' },
-                        { id: 'caterer-search', text: 'Contact caterers', notes: '' },
-                        { id: 'engagement-photos', text: 'Shoot engagement photos', notes: '' },
-                        { id: 'finalize-guest-list', text: 'Finalize guest list', notes: '' },
-                        { id: 'save-dates', text: 'Send Save the Dates', notes: '' },
-                        { id: 'wedding-website', text: 'Create wedding website', notes: '' }
-                    ]
-                }
-            ];
+        function toggleTask(button) {
+            const icon = button.querySelector('.task-icon');
+            const taskText = button.parentElement.querySelector('.task-text');
+            const isCompleted = icon.innerHTML.includes('circle');
 
-            const sampleClients = [
-                {
-                    id: 1,
-                    name: 'Sarah & Michael',
-                    weddingDate: '2025-09-15',
-                    progress: 67,
-                    lastActivity: '2 days ago',
-                    status: 'on-track',
-                    completedTasks: new Set(['must-haves', 'theme', 'budget', 'coordinator', 'wedding-party', 'venue-search', 'tour-venues', 'book-venue']),
-                    vendors: [
-                        { id: 1, name: 'The Venue STL', type: 'venue', cost: '$8,500', status: 'booked' },
-                        { id: 2, name: 'Lens & Light Photography', type: 'photographer', cost: '$3,200', status: 'considering' }
-                    ],
-                    alerts: ['Photographer booking recommended - 16 months out'],
-                    notes: 'Prefer rustic/outdoor theme. Budget conscious but willing to splurge on photography.'
-                },
-                {
-                    id: 2,
-                    name: 'Jessica & David',
-                    weddingDate: '2025-11-08',
-                    progress: 34,
-                    lastActivity: '1 week ago',
-                    status: 'behind',
-                    completedTasks: new Set(['must-haves', 'theme', 'budget']),
-                    vendors: [
-                        { id: 3, name: 'Forest Park Pavilion', type: 'venue', cost: '$5,000', status: 'considering' }
-                    ],
-                    alerts: ['Behind schedule - needs venue booking', 'Guest list discussion overdue'],
-                    notes: 'Very busy with work. May need extra support with vendor coordination.'
-                },
-                {
-                    id: 3,
-                    name: 'Amanda & Chris',
-                    weddingDate: '2025-06-21',
-                    progress: 89,
-                    lastActivity: '1 day ago',
-                    status: 'ahead',
-                    completedTasks: new Set(['must-haves', 'theme', 'budget', 'coordinator', 'wedding-party', 'venue-search', 'tour-venues', 'book-venue', 'photographer-search', 'book-photography', 'wedding-attire']),
-                    vendors: [
-                        { id: 4, name: 'Bowood Farms', type: 'venue', cost: '$12,000', status: 'booked' },
-                        { id: 5, name: 'Clary Sage Photography', type: 'photographer', cost: '$4,500', status: 'booked' },
-                        { id: 6, name: 'Petal & Oak', type: 'florist', cost: '$2,800', status: 'booked' }
-                    ],
-                    alerts: [],
-                    notes: 'Super organized couple. Excellent communication. Referring friends!'
-                }
-            ];
+            if (isCompleted) {
+                // Mark as completed
+                icon.innerHTML = '<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />';
+                icon.classList.remove('text-gray-400', 'hover:text-gray-600');
+                icon.classList.add('text-green-500');
+                taskText.classList.add('line-through', 'text-gray-500');
+                taskText.classList.remove('text-gray-800');
+                completedTasks.add(taskText.textContent);
+            } else {
+                // Mark as incomplete
+                icon.innerHTML = '<circle cx="12" cy="12" r="10"></circle>';
+                icon.classList.remove('text-green-500');
+                icon.classList.add('text-gray-400', 'hover:text-gray-600');
+                taskText.classList.remove('line-through', 'text-gray-500');
+                taskText.classList.add('text-gray-800');
+                completedTasks.delete(taskText.textContent);
+            }
+            updateProgress();
+        }
 
-            const toggleTask = (taskId) => {
-                const newCompleted = new Set(completedTasks);
-                if (newCompleted.has(taskId)) {
-                    newCompleted.delete(taskId);
-                } else {
-                    newCompleted.add(taskId);
-                }
-                setCompletedTasks(newCompleted);
-            };
+        function updateProgress() {
+            const totalTasks = document.querySelectorAll('.task-text').length;
+            const completed = completedTasks.size;
+            const percentage = Math.round((completed / totalTasks) * 100);
+            document.getElementById('progressPercent').textContent = percentage + '%';
+        }
 
-            const addGuest = (guestData) => {
-                setGuests([...guests, { ...guestData, id: Date.now() }]);
-                setShowAddGuest(false);
-            };
+        // Vendor functions
+        function showAddVendorForm() {
+            document.getElementById('addVendorForm').classList.remove('hidden');
+        }
 
-            const updateGuest = (id, guestData) => {
-                setGuests(guests.map(g => g.id === id ? { ...guestData, id } : g));
-                setEditingGuest(null);
-            };
+        function cancelVendorForm() {
+            document.getElementById('addVendorForm').classList.add('hidden');
+            clearVendorForm();
+        }
 
-            const deleteGuest = (id) => {
-                setGuests(guests.filter(g => g.id !== id));
-            };
+        function clearVendorForm() {
+            document.getElementById('vendorName').value = '';
+            document.getElementById('vendorType').value = '';
+            document.getElementById('vendorEmail').value = '';
+            document.getElementById('vendorPhone').value = '';
+            document.getElementById('vendorCost').value = '';
+            document.getElementById('vendorNotes').value = '';
+        }
 
-            const getGuestStats = () => {
-                const total = guests.length;
-                const confirmed = guests.filter(g => g.rsvp === 'yes').length;
-                const declined = guests.filter(g => g.rsvp === 'no').length;
-                const pending = guests.filter(g => g.rsvp === 'pending').length;
-                const assigned = guests.filter(g => g.tableNumber).length;
-                
-                return { total, confirmed, declined, pending, assigned };
-            };
+        function saveVendor() {
+            const name = document.getElementById('vendorName').value;
+            const type = document.getElementById('vendorType').value;
+            const email = document.getElementById('vendorEmail').value;
+            const phone = document.getElementById('vendorPhone').value;
+            const cost = document.getElementById('vendorCost').value;
+            const notes = document.getElementById('vendorNotes').value;
 
-            const getTableAssignments = () => {
-                const tables = {};
-                guests.forEach(guest => {
-                    if (guest.tableNumber) {
-                        if (!tables[guest.tableNumber]) {
-                            tables[guest.tableNumber] = [];
-                        }
-                        tables[guest.tableNumber].push(guest);
-                    }
+            if (name && type) {
+                vendors.push({
+                    id: Date.now(),
+                    name, type, email, phone, cost, notes
                 });
-                return tables;
-            };
+                renderVendors();
+                cancelVendorForm();
+            }
+        }
 
-            const addVendor = (vendorData) => {
-                setVendors([...vendors, { ...vendorData, id: Date.now() }]);
-                setShowAddVendor(false);
-            };
+        function renderVendors() {
+            const vendorsList = document.getElementById('vendorsList');
+            if (vendors.length === 0) {
+                vendorsList.innerHTML = `
+                    <div class="text-center py-12 bg-white rounded-lg shadow-sm">
+                        <svg class="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                        <p class="text-gray-500">No vendors added yet</p>
+                        <p class="text-sm text-gray-400">Click "Add Vendor" to get started</p>
+                    </div>
+                `;
+            } else {
+                vendorsList.innerHTML = vendors.map(vendor => `
+                    <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <h3 class="font-semibold text-gray-800">${vendor.name}</h3>
+                                <span class="inline-block bg-rose-100 text-rose-800 text-xs px-2 py-1 rounded-full">${vendor.type}</span>
+                            </div>
+                            <button onclick="deleteVendor(${vendor.id})" class="text-red-400 hover:text-red-600">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 text-sm">
+                            ${vendor.email ? `<div class="flex items-center space-x-2">
+                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                    <polyline points="22,6 12,13 2,6"></polyline>
+                                </svg>
+                                <span>${vendor.email}</span>
+                            </div>` : ''}
+                            ${vendor.phone ? `<div class="flex items-center space-x-2">
+                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                                </svg>
+                                <span>${vendor.phone}</span>
+                            </div>` : ''}
+                            ${vendor.cost ? `<div class="flex items-center space-x-2">
+                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <line x1="12" y1="1" x2="12" y2="23"></line>
+                                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                                </svg>
+                                <span>${vendor.cost}</span>
+                            </div>` : ''}
+                        </div>
+                        ${vendor.notes ? `<div class="mt-3 p-3 bg-gray-50 rounded text-sm">
+                            <p class="text-gray-600">${vendor.notes}</p>
+                        </div>` : ''}
+                    </div>
+                `).join('');
+            }
+        }
 
-            const updateVendor = (id, vendorData) => {
-                setVendors(vendors.map(v => v.id === id ? { ...vendorData, id } : v));
-                setEditingVendor(null);
-            };
+        function deleteVendor(id) {
+            vendors = vendors.filter(v => v.id !== id);
+            renderVendors();
+        }
 
-            const deleteVendor = (id) => {
-                setVendors(vendors.filter(v => v.id !== id));
-            };
+        // Guest functions
+        function showAddGuestForm() {
+            document.getElementById('addGuestForm').classList.remove('hidden');
+        }
 
-            const getStatusColor = (status) => {
-                switch(status) {
-                    case 'ahead': return 'text-green-600 bg-green-100';
-                    case 'on-track': return 'text-blue-600 bg-blue-100';
-                    case 'behind': return 'text-red-600 bg-red-100';
-                    default: return 'text-gray-600 bg-gray-100';
-                }
-            };
+        function cancelGuestForm() {
+            document.getElementById('addGuestForm').classList.add('hidden');
+            clearGuestForm();
+        }
 
-            const getDaysUntilWedding = (weddingDate) => {
-                const today = new Date();
-                const wedding = new Date(weddingDate);
-                const diffTime = wedding - today;
-                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                return diffDays;
-            };
+        function clearGuestForm() {
+            document.getElementById('guestFirstName').value = '';
+            document.getElementById('guestLastName').value = '';
+            document.getElementById('guestEmail').value = '';
+            document.getElementById('guestPhone').value = '';
+            document.getElementById('guestGroup').value = '';
+            document.getElementById('guestRSVP').value = 'pending';
+            document.getElementById('guestPlusOne').value = '';
+            document.getElementById('guestTable').value = '';
+            document.getElementById('guestDietary').value = '';
+        }
 
-            const addAdminNote = (clientId, note) => {
-                setAdminNotes(prev => ({
-                    ...prev,
-                    [clientId]: [...(prev[clientId] || []), {
-                        id: Date.now(),
-                        note,
-                        timestamp: new Date().toISOString(),
-                        author: 'Adorist Team'
-                    }]
-                }));
-            };
+        function saveGuest() {
+            const firstName = document.getElementById('guestFirstName').value;
+            const lastName = document.getElementById('guestLastName').value;
+            const email = document.getElementById('guestEmail').value;
+            const phone = document.getElementById('guestPhone').value;
+            const group = document.getElementById('guestGroup').value;
+            const rsvp = document.getElementById('guestRSVP').value;
+            const plusOne = document.getElementById('guestPlusOne').value;
+            const tableNumber = document.getElementById('guestTable').value;
+            const dietaryRestrictions = document.getElementById('guestDietary').value;
 
-            const calculateProgress = () => {
-                const totalTasks = timelineData.reduce((sum, phase) => sum + phase.tasks.length, 0);
-                const completedCount = completedTasks.size;
-                return Math.round((completedCount / totalTasks) * 100);
-            };
-
-            const GuestForm = ({ guest, onSave, onCancel }) => {
-                const [formData, setFormData] = useState(guest || {
-                    firstName: '',
-                    lastName: '',
-                    email: '',
-                    phone: '',
-                    group: '',
-                    dietaryRestrictions: '',
-                    plusOne: '',
-                    rsvp: 'pending',
-                    tableNumber: ''
+            if (firstName && lastName) {
+                guests.push({
+                    id: Date.now(),
+                    firstName, lastName, email, phone, group, rsvp, plusOne, tableNumber, dietaryRestrictions
                 });
+                renderGuests();
+                updateGuestStats();
+                cancelGuestForm();
+            }
+        }
 
-                return React.createElement('div', { className: "bg-white p-6 rounded-lg shadow-lg border" },
-                    React.createElement('h3', { className: "text-lg font-semibold mb-4" },
-                        vendor ? 'Edit Vendor' : 'Add New Vendor'
-                    ),
-                    React.createElement('div', { className: "space-y-4" },
-                        React.createElement('div', { className: "grid grid-cols-2 gap-4" },
-                            React.createElement('input', {
-                                type: "text",
-                                placeholder: "Vendor Name",
-                                value: formData.name,
-                                onChange: (e) => setFormData({...formData, name: e.target.value}),
-                                className: "p-2 border rounded"
-                            }),
-                            React.createElement('select', {
-                                value: formData.type,
-                                onChange: (e) => setFormData({...formData, type: e.target.value}),
-                                className: "p-2 border rounded"
-                            },
-                                React.createElement('option', { value: "" }, "Select Type"),
-                                React.createElement('option', { value: "venue" }, "Venue"),
-                                React.createElement('option', { value: "photographer" }, "Photographer"),
-                                React.createElement('option', { value: "florist" }, "Florist"),
-                                React.createElement('option', { value: "caterer" }, "Caterer"),
-                                React.createElement('option', { value: "dj" }, "DJ/Band"),
-                                React.createElement('option', { value: "coordinator" }, "Coordinator"),
-                                React.createElement('option', { value: "officiant" }, "Officiant"),
-                                React.createElement('option', { value: "other" }, "Other")
-                            )
-                        ),
-                        React.createElement('div', { className: "grid grid-cols-2 gap-4" },
-                            React.createElement('input', {
-                                type: "email",
-                                placeholder: "Email",
-                                value: formData.email,
-                                onChange: (e) => setFormData({...formData, email: e.target.value}),
-                                className: "p-2 border rounded"
-                            }),
-                            React.createElement('input', {
-                                type: "tel",
-                                placeholder: "Phone",
-                                value: formData.phone,
-                                onChange: (e) => setFormData({...formData, phone: e.target.value}),
-                                className: "p-2 border rounded"
-                            })
-                        ),
-                        React.createElement('input', {
-                            type: "text",
-                            placeholder: "Cost (e.g., $2,500)",
-                            value: formData.cost,
-                            onChange: (e) => setFormData({...formData, cost: e.target.value}),
-                            className: "p-2 border rounded w-full"
-                        }),
-                        React.createElement('textarea', {
-                            placeholder: "Notes",
-                            value: formData.notes,
-                            onChange: (e) => setFormData({...formData, notes: e.target.value}),
-                            className: "p-2 border rounded w-full h-20"
-                        }),
-                        React.createElement('div', { className: "flex gap-2" },
-                            React.createElement('button', {
-                                onClick: () => {
-                                    if (formData.name && formData.type) {
-                                        onSave(formData);
-                                    }
-                                },
-                                className: "bg-rose-500 text-white px-4 py-2 rounded hover:bg-rose-600"
-                            }, "Save"),
-                            React.createElement('button', {
-                                onClick: onCancel,
-                                className: "bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400"
-                            }, "Cancel")
-                        )
-                    )
-                );
-            };
+        function renderGuests() {
+            const guestsList = document.getElementById('guestsList');
+            if (guests.length === 0) {
+                guestsList.innerHTML = `
+                    <div class="text-center py-12 bg-white rounded-lg shadow-sm">
+                        <svg class="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                        <p class="text-gray-500">No guests added yet</p>
+                        <p class="text-sm text-gray-400">Click "Add Guest" to get started</p>
+                    </div>
+                `;
+            } else {
+                guestsList.innerHTML = guests.map(guest => {
+                    const rsvpColors = {
+                        'yes': 'bg-green-100 text-green-700',
+                        'no': 'bg-red-100 text-red-700',
+                        'maybe': 'bg-yellow-100 text-yellow-700',
+                        'pending': 'bg-gray-100 text-gray-700'
+                    };
+                    const rsvpLabels = {
+                        'yes': 'Confirmed',
+                        'no': 'Declined',
+                        'maybe': 'Maybe',
+                        'pending': 'Pending'
+                    };
+                    return `
+                        <div class="bg-gray-50 p-4 rounded-lg flex justify-between items-center mb-3">
+                            <div>
+                                <div class="font-medium text-gray-800">${guest.firstName} ${guest.lastName}</div>
+                                <div class="text-sm text-gray-600">
+                                    ${guest.group ? `Group: ${guest.group}` : ''}
+                                    ${guest.tableNumber ? ` • Table ${guest.tableNumber}` : ''}
+                                    ${guest.plusOne ? ` • +${guest.plusOne}` : ''}
+                                </div>
+                                ${guest.dietaryRestrictions ? `<div class="text-xs text-red-600 mt-1">Dietary: ${guest.dietaryRestrictions}</div>` : ''}
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-xs px-2 py-1 rounded-full ${rsvpColors[guest.rsvp] || rsvpColors.pending}">
+                                    ${rsvpLabels[guest.rsvp] || 'Pending'}
+                                </span>
+                                <button onclick="deleteGuest(${guest.id})" class="text-red-400 hover:text-red-600">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
 
-            return React.createElement('div', { className: "min-h-screen bg-gradient-to-br from-rose-50 to-pink-50" },
-                // Header
-                React.createElement('div', { className: "bg-white shadow-sm border-b" },
-                    React.createElement('div', { className: "max-w-6xl mx-auto px-4 py-4" },
-                        React.createElement('div', { className: "flex items-center justify-between" },
-                            React.createElement('div', { className: "flex items-center space-x-3" },
-                                React.createElement(Diamond, { className: "text-rose-500 w-8 h-8" }),
-                                React.createElement('div', null,
-                                    React.createElement('h1', { className: "text-2xl font-bold text-gray-800" },
-                                        viewMode === 'admin' ? 'Adorist Admin Portal' : 'Adorist Wedding Planner'
-                                    ),
-                                    React.createElement('p', { className: "text-sm text-gray-500" },
-                                        viewMode === 'admin' ? 'Client management dashboard' : 'Your personal wedding planning assistant'
-                                    )
-                                )
-                            ),
-                            React.createElement('div', { className: "flex items-center space-x-4" },
-                                React.createElement('button', {
-                                    onClick: () => setViewMode(viewMode === 'admin' ? 'client' : 'admin'),
-                                    className: "flex items-center space-x-2 px-4 py-2 bg-rose-500 text-white rounded-lg hover:bg-rose-600 transition-colors"
-                                },
-                                    React.createElement(Settings, { className: "w-4 h-4" }),
-                                    React.createElement('span', null, viewMode === 'admin' ? 'Client View' : 'Admin View')
-                                ),
-                                viewMode === 'client' && React.createElement('div', { className: "text-right" },
-                                    React.createElement('div', { className: "text-sm text-gray-500" }, "Progress"),
-                                    React.createElement('div', { className: "text-2xl font-bold text-rose-500" }, calculateProgress() + "%")
-                                )
-                            )
-                        )
-                    )
-                ),
+        function updateGuestStats() {
+            const total = guests.length;
+            const confirmed = guests.filter(g => g.rsvp === 'yes').length;
+            const declined = guests.filter(g => g.rsvp === 'no').length;
+            const pending = guests.filter(g => g.rsvp === 'pending').length;
+            const seated = guests.filter(g => g.tableNumber).length;
 
-                // Content
-                React.createElement('div', { className: "max-w-6xl mx-auto px-4 py-6" },
-                    viewMode === 'admin' ? (
-                        // Admin Dashboard (simplified for HTML)
-                        React.createElement('div', { className: "bg-white rounded-lg shadow-sm p-8 text-center" },
-                            React.createElement('h2', { className: "text-3xl font-bold text-gray-800 mb-4" }, "Adorist Admin Dashboard"),
-                            React.createElement('p', { className: "text-xl text-gray-600 mb-8" }, "Full admin features coming soon!"),
-                            React.createElement('div', { className: "grid grid-cols-3 gap-6" },
-                                React.createElement('div', { className: "bg-green-50 p-6 rounded-lg" },
-                                    React.createElement('div', { className: "text-3xl font-bold text-green-700" }, "3"),
-                                    React.createElement('div', { className: "text-green-600" }, "Active Clients")
-                                ),
-                                React.createElement('div', { className: "bg-blue-50 p-6 rounded-lg" },
-                                    React.createElement('div', { className: "text-3xl font-bold text-blue-700" }, "85%"),
-                                    React.createElement('div', { className: "text-blue-600" }, "Avg Progress")
-                                ),
-                                React.createElement('div', { className: "bg-red-50 p-6 rounded-lg" },
-                                    React.createElement('div', { className: "text-3xl font-bold text-red-700" }, "2"),
-                                    React.createElement('div', { className: "text-red-600" }, "Need Attention")
-                                )
-                            )
-                        )
-                    ) : (
-                        // Client View
-                        React.createElement('div', null,
-                            // Wedding Date Input
-                            React.createElement('div', { className: "mb-6" },
-                                React.createElement('div', { className: "bg-white rounded-lg shadow-sm p-4" },
-                                    React.createElement('div', { className: "flex items-center space-x-4" },
-                                        React.createElement(Calendar, { className: "text-rose-500 w-6 h-6" }),
-                                        React.createElement('div', { className: "flex-1" },
-                                            React.createElement('label', { className: "block text-sm font-medium text-gray-700 mb-1" }, "Wedding Date"),
-                                            React.createElement('input', {
-                                                type: "date",
-                                                value: weddingDate,
-                                                onChange: (e) => setWeddingDate(e.target.value),
-                                                className: "p-2 border rounded-md w-full max-w-xs"
-                                            })
-                                        )
-                                    )
-                                )
-                            ),
+            document.getElementById('totalGuests').textContent = total;
+            document.getElementById('confirmedGuests').textContent = confirmed;
+            document.getElementById('declinedGuests').textContent = declined;
+            document.getElementById('pendingGuests').textContent = pending;
+            document.getElementById('seatedGuests').textContent = seated;
+        }
 
-                            // Navigation Tabs
-                            React.createElement('div', { className: "mb-6" },
-                                React.createElement('div', { className: "flex space-x-1 bg-white rounded-lg p-1 shadow-sm" },
-                                    React.createElement('button', {
-                                        onClick: () => setActiveTab('timeline'),
-                                        className: `flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
-                                            activeTab === 'timeline' ? 'bg-rose-500 text-white' : 'text-gray-600 hover:text-gray-800'
-                                        }`
-                                    },
-                                        React.createElement(Clock, { className: "w-4 h-4 inline mr-2" }),
-                                        "Checklist"
-                                    ),
-                                    React.createElement('button', {
-                                        onClick: () => setActiveTab('vendors'),
-                                        className: `flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
-                                            activeTab === 'vendors' ? 'bg-rose-500 text-white' : 'text-gray-600 hover:text-gray-800'
-                                        }`
-                                    },
-                                        React.createElement(Star, { className: "w-4 h-4 inline mr-2" }),
-                                        "Vendors"
-                                    ),
-                                    React.createElement('button', {
-                                        onClick: () => setActiveTab('guests'),
-                                        className: `flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
-                                            activeTab === 'guests' ? 'bg-rose-500 text-white' : 'text-gray-600 hover:text-gray-800'
-                                        }`
-                                    },
-                                        React.createElement(Users, { className: "w-4 h-4 inline mr-2" }),
-                                        "Guests"
-                                    )
-                                )
-                            ),
+        function deleteGuest(id) {
+            guests = guests.filter(g => g.id !== id);
+            renderGuests();
+            updateGuestStats();
+        }
 
-                            // Tab Content
-                            activeTab === 'timeline' && React.createElement('div', { className: "space-y-6" },
-                                timelineData.map((phase, index) =>
-                                    React.createElement('div', { key: index, className: "bg-white rounded-lg shadow-sm overflow-hidden" },
-                                        React.createElement('div', { className: `bg-gradient-to-r ${phase.color} p-4` },
-                                            React.createElement('h2', { className: "text-xl font-bold text-white" }, phase.title),
-                                            React.createElement('p', { className: "text-white/90 text-sm" }, phase.timeframe)
-                                        ),
-                                        React.createElement('div', { className: "p-4" },
-                                            React.createElement('div', { className: "space-y-3" },
-                                                phase.tasks.map((task) =>
-                                                    React.createElement('div', { key: task.id, className: "flex items-start space-x-3" },
-                                                        React.createElement('button', {
-                                                            onClick: () => toggleTask(task.id),
-                                                            className: "mt-1 flex-shrink-0"
-                                                        },
-                                                            completedTasks.has(task.id) ?
-                                                                React.createElement(CheckCircle, { className: "w-5 h-5 text-green-500" }) :
-                                                                React.createElement(Circle, { className: "w-5 h-5 text-gray-400 hover:text-gray-600" })
-                                                        ),
-                                                        React.createElement('div', { className: "flex-1" },
-                                                            React.createElement('p', {
-                                                                className: `text-sm ${
-                                                                    completedTasks.has(task.id) ? 'text-gray-500 line-through' : 'text-gray-800'
-                                                                }`
-                                                            }, task.text)
-                                                        )
-                                                    )
-                                                )
-                                            )
-                                        )
-                                    )
-                                )
-                            ),
-
-                            activeTab === 'guests' && React.createElement('div', { className: "space-y-6" },
-                                // Guest Stats
-                                React.createElement('div', { className: "grid grid-cols-2 md:grid-cols-5 gap-4" },
-                                    (() => {
-                                        const stats = getGuestStats();
-                                        return [
-                                            React.createElement('div', { key: 'total', className: "bg-white p-4 rounded-lg shadow-sm text-center" },
-                                                React.createElement('div', { className: "text-2xl font-bold text-gray-800" }, stats.total),
-                                                React.createElement('div', { className: "text-sm text-gray-600" }, "Total Invited")
-                                            ),
-                                            React.createElement('div', { key: 'confirmed', className: "bg-white p-4 rounded-lg shadow-sm text-center" },
-                                                React.createElement('div', { className: "text-2xl font-bold text-green-600" }, stats.confirmed),
-                                                React.createElement('div', { className: "text-sm text-gray-600" }, "Confirmed")
-                                            ),
-                                            React.createElement('div', { key: 'declined', className: "bg-white p-4 rounded-lg shadow-sm text-center" },
-                                                React.createElement('div', { className: "text-2xl font-bold text-red-600" }, stats.declined),
-                                                React.createElement('div', { className: "text-sm text-gray-600" }, "Declined")
-                                            ),
-                                            React.createElement('div', { key: 'pending', className: "bg-white p-4 rounded-lg shadow-sm text-center" },
-                                                React.createElement('div', { className: "text-2xl font-bold text-yellow-600" }, stats.pending),
-                                                React.createElement('div', { className: "text-sm text-gray-600" }, "Pending")
-                                            ),
-                                            React.createElement('div', { key: 'assigned', className: "bg-white p-4 rounded-lg shadow-sm text-center" },
-                                                React.createElement('div', { className: "text-2xl font-bold text-blue-600" }, stats.assigned),
-                                                React.createElement('div', { className: "text-sm text-gray-600" }, "Seated")
-                                            )
-                                        ];
-                                    })()
-                                ),
-
-                                // Add Guest Button and Forms
-                                React.createElement('div', { className: "flex justify-between items-center" },
-                                    React.createElement('h2', { className: "text-xl font-bold text-gray-800" }, "Guest List"),
-                                    React.createElement('button', {
-                                        onClick: () => setShowAddGuest(true),
-                                        className: "bg-rose-500 text-white px-4 py-2 rounded-lg hover:bg-rose-600 flex items-center space-x-2"
-                                    },
-                                        React.createElement(UserPlus, { className: "w-4 h-4" }),
-                                        React.createElement('span', null, "Add Guest")
-                                    )
-                                ),
-
-                                showAddGuest && React.createElement(GuestForm, {
-                                    onSave: addGuest,
-                                    onCancel: () => setShowAddGuest(false)
-                                }),
-
-                                editingGuest && React.createElement(GuestForm, {
-                                    guest: editingGuest,
-                                    onSave: (data) => updateGuest(editingGuest.id, data),
-                                    onCancel: () => setEditingGuest(null)
-                                }),
-
-                                // Guest List
-                                React.createElement('div', { className: "bg-white rounded-lg shadow-sm overflow-hidden" },
-                                    guests.length === 0 ?
-                                        React.createElement('div', { className: "text-center py-12" },
-                                            React.createElement(Users, { className: "w-12 h-12 text-gray-400 mx-auto mb-4" }),
-                                            React.createElement('p', { className: "text-gray-500" }, "No guests added yet"),
-                                            React.createElement('p', { className: "text-sm text-gray-400" }, "Click 'Add Guest' to get started")
-                                        ) :
-                                        React.createElement('div', { className: "p-4 space-y-3" },
-                                            guests.map((guest) =>
-                                                React.createElement('div', { key: guest.id, className: "bg-gray-50 p-4 rounded-lg flex justify-between items-center" },
-                                                    React.createElement('div', null,
-                                                        React.createElement('div', { className: "font-medium text-gray-800" },
-                                                            guest.firstName + " " + guest.lastName
-                                                        ),
-                                                        React.createElement('div', { className: "text-sm text-gray-600" },
-                                                            guest.group && `Group: ${guest.group}`,
-                                                            guest.tableNumber && ` • Table ${guest.tableNumber}`
-                                                        )
-                                                    ),
-                                                    React.createElement('div', { className: "flex items-center space-x-2" },
-                                                        React.createElement('span', {
-                                                            className: `text-xs px-2 py-1 rounded-full ${
-                                                                guest.rsvp === 'yes' ? 'bg-green-100 text-green-700' :
-                                                                guest.rsvp === 'no' ? 'bg-red-100 text-red-700' :
-                                                                guest.rsvp === 'maybe' ? 'bg-yellow-100 text-yellow-700' :
-                                                                'bg-gray-100 text-gray-700'
-                                                            }`
-                                                        },
-                                                            guest.rsvp === 'yes' ? 'Confirmed' :
-                                                            guest.rsvp === 'no' ? 'Declined' :
-                                                            guest.rsvp === 'maybe' ? 'Maybe' : 'Pending'
-                                                        ),
-                                                        React.createElement('button', {
-                                                            onClick: () => setEditingGuest(guest),
-                                                            className: "text-gray-400 hover:text-gray-600"
-                                                        },
-                                                            React.createElement(Edit2, { className: "w-4 h-4" })
-                                                        ),
-                                                        React.createElement('button', {
-                                                            onClick: () => deleteGuest(guest.id),
-                                                            className: "text-red-400 hover:text-red-600"
-                                                        },
-                                                            React.createElement(X, { className: "w-4 h-4" })
-                                                        )
-                                                    )
-                                                )
-                                            )
-                                        )
-                                )
-                            ),
-
-                            activeTab === 'vendors' && React.createElement('div', { className: "space-y-6" },
-                                React.createElement('div', { className: "flex justify-between items-center" },
-                                    React.createElement('h2', { className: "text-xl font-bold text-gray-800" }, "Your Vendors"),
-                                    React.createElement('button', {
-                                        onClick: () => setShowAddVendor(true),
-                                        className: "bg-rose-500 text-white px-4 py-2 rounded-lg hover:bg-rose-600 flex items-center space-x-2"
-                                    },
-                                        React.createElement(Plus, { className: "w-4 h-4" }),
-                                        React.createElement('span', null, "Add Vendor")
-                                    )
-                                ),
-
-                                showAddVendor && React.createElement(VendorForm, {
-                                    onSave: addVendor,
-                                    onCancel: () => setShowAddVendor(false)
-                                }),
-
-                                editingVendor && React.createElement(VendorForm, {
-                                    vendor: editingVendor,
-                                    onSave: (data) => updateVendor(editingVendor.id, data),
-                                    onCancel: () => setEditingVendor(null)
-                                }),
-
-                                React.createElement('div', { className: "grid gap-4" },
-                                    vendors.length === 0 ?
-                                        React.createElement('div', { className: "text-center py-12 bg-white rounded-lg shadow-sm" },
-                                            React.createElement(Users, { className: "w-12 h-12 text-gray-400 mx-auto mb-4" }),
-                                            React.createElement('p', { className: "text-gray-500" }, "No vendors added yet"),
-                                            React.createElement('p', { className: "text-sm text-gray-400" }, "Click 'Add Vendor' to get started")
-                                        ) :
-                                        vendors.map((vendor) =>
-                                            React.createElement('div', { key: vendor.id, className: "bg-white rounded-lg shadow-sm p-4" },
-                                                React.createElement('div', { className: "flex justify-between items-start mb-3" },
-                                                    React.createElement('div', null,
-                                                        React.createElement('h3', { className: "font-semibold text-gray-800" }, vendor.name),
-                                                        React.createElement('span', { className: "inline-block bg-rose-100 text-rose-800 text-xs px-2 py-1 rounded-full" },
-                                                            vendor.type
-                                                        )
-                                                    ),
-                                                    React.createElement('div', { className: "flex space-x-2" },
-                                                        React.createElement('button', {
-                                                            onClick: () => setEditingVendor(vendor),
-                                                            className: "text-gray-400 hover:text-gray-600"
-                                                        },
-                                                            React.createElement(Edit2, { className: "w-4 h-4" })
-                                                        ),
-                                                        React.createElement('button', {
-                                                            onClick: () => deleteVendor(vendor.id),
-                                                            className: "text-red-400 hover:text-red-600"
-                                                        },
-                                                            React.createElement(X, { className: "w-4 h-4" })
-                                                        )
-                                                    )
-                                                ),
-                                                React.createElement('div', { className: "grid grid-cols-2 gap-4 text-sm" },
-                                                    vendor.email && React.createElement('div', { className: "flex items-center space-x-2" },
-                                                        React.createElement(Mail, { className: "w-4 h-4 text-gray-400" }),
-                                                        React.createElement('span', null, vendor.email)
-                                                    ),
-                                                    vendor.phone && React.createElement('div', { className: "flex items-center space-x-2" },
-                                                        React.createElement(Phone, { className: "w-4 h-4 text-gray-400" }),
-                                                        React.createElement('span', null, vendor.phone)
-                                                    ),
-                                                    vendor.cost && React.createElement('div', { className: "flex items-center space-x-2" },
-                                                        React.createElement(DollarSign, { className: "w-4 h-4 text-gray-400" }),
-                                                        React.createElement('span', null, vendor.cost)
-                                                    )
-                                                ),
-                                                vendor.notes && React.createElement('div', { className: "mt-3 p-3 bg-gray-50 rounded text-sm" },
-                                                    React.createElement('p', { className: "text-gray-600" }, vendor.notes)
-                                                )
-                                            )
-                                        )
-                                )
-                            )
-                        )
-                    )
-                )
-            );
-        };
-
-        ReactDOM.render(React.createElement(AdoristWeddingPlanner), document.getElementById('root'));
+        // Initialize
+        updateProgress();
+        updateGuestStats();
     </script>
 </body>
-</html>semibold mb-4" },
-                        guest ? 'Edit Guest' : 'Add New Guest'
-                    ),
-                    React.createElement('div', { className: "space-y-4" },
-                        React.createElement('div', { className: "grid grid-cols-2 gap-4" },
-                            React.createElement('input', {
-                                type: "text",
-                                placeholder: "First Name",
-                                value: formData.firstName,
-                                onChange: (e) => setFormData({...formData, firstName: e.target.value}),
-                                className: "p-2 border rounded"
-                            }),
-                            React.createElement('input', {
-                                type: "text",
-                                placeholder: "Last Name",
-                                value: formData.lastName,
-                                onChange: (e) => setFormData({...formData, lastName: e.target.value}),
-                                className: "p-2 border rounded"
-                            })
-                        ),
-                        React.createElement('div', { className: "grid grid-cols-2 gap-4" },
-                            React.createElement('input', {
-                                type: "email",
-                                placeholder: "Email",
-                                value: formData.email,
-                                onChange: (e) => setFormData({...formData, email: e.target.value}),
-                                className: "p-2 border rounded"
-                            }),
-                            React.createElement('input', {
-                                type: "tel",
-                                placeholder: "Phone",
-                                value: formData.phone,
-                                onChange: (e) => setFormData({...formData, phone: e.target.value}),
-                                className: "p-2 border rounded"
-                            })
-                        ),
-                        React.createElement('div', { className: "grid grid-cols-2 gap-4" },
-                            React.createElement('input', {
-                                type: "text",
-                                placeholder: "Group (Family, Friends, Work, etc.)",
-                                value: formData.group,
-                                onChange: (e) => setFormData({...formData, group: e.target.value}),
-                                className: "p-2 border rounded"
-                            }),
-                            React.createElement('select', {
-                                value: formData.rsvp,
-                                onChange: (e) => setFormData({...formData, rsvp: e.target.value}),
-                                className: "p-2 border rounded"
-                            },
-                                React.createElement('option', { value: "pending" }, "RSVP Pending"),
-                                React.createElement('option', { value: "yes" }, "Yes - Attending"),
-                                React.createElement('option', { value: "no" }, "No - Declined"),
-                                React.createElement('option', { value: "maybe" }, "Maybe")
-                            )
-                        ),
-                        React.createElement('div', { className: "grid grid-cols-2 gap-4" },
-                            React.createElement('input', {
-                                type: "text",
-                                placeholder: "Plus One Name (if applicable)",
-                                value: formData.plusOne,
-                                onChange: (e) => setFormData({...formData, plusOne: e.target.value}),
-                                className: "p-2 border rounded"
-                            }),
-                            React.createElement('input', {
-                                type: "number",
-                                placeholder: "Table Number",
-                                value: formData.tableNumber,
-                                onChange: (e) => setFormData({...formData, tableNumber: e.target.value}),
-                                className: "p-2 border rounded"
-                            })
-                        ),
-                        React.createElement('textarea', {
-                            placeholder: "Dietary Restrictions / Notes",
-                            value: formData.dietaryRestrictions,
-                            onChange: (e) => setFormData({...formData, dietaryRestrictions: e.target.value}),
-                            className: "p-2 border rounded w-full h-20"
-                        }),
-                        React.createElement('div', { className: "flex gap-2" },
-                            React.createElement('button', {
-                                onClick: () => {
-                                    if (formData.firstName && formData.lastName) {
-                                        onSave(formData);
-                                    }
-                                },
-                                className: "bg-rose-500 text-white px-4 py-2 rounded hover:bg-rose-600"
-                            }, "Save"),
-                            React.createElement('button', {
-                                onClick: onCancel,
-                                className: "bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400"
-                            }, "Cancel")
-                        )
-                    )
-                );
-            };
-
-            const VendorForm = ({ vendor, onSave, onCancel }) => {
-                const [formData, setFormData] = useState(vendor || {
-                    name: '',
-                    type: '',
-                    contact: '',
-                    email: '',
-                    phone: '',
-                    cost: '',
-                    notes: ''
-                });
-
-                return React.createElement('div', { className: "bg-white p-6 rounded-lg shadow-lg border" },
-                    React.createElement('h3', { className: "text-lg font-
+</html>
